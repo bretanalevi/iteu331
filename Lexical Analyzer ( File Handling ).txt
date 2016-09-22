@@ -1,0 +1,62 @@
+#include <iterator>
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <regex>
+#include <list>
+#include <map>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+
+
+int main()
+{
+
+    map<string,string> patterns;
+	patterns["[0-9]+"] = "NUM";
+	patterns["[a-z]+"] = "VAR";
+	patterns["[A-Z]+"] = "VAR";
+	patterns["[\\=]"] = "EQ";
+	patterns["[\\+]"] = "ADD";
+	patterns["[\\-]"] = "SUB";
+	patterns["[\\*]"] = "MUL";
+	patterns["[\\/]"] = "DIV";
+	patterns["[\\%]"] = "MOD";
+	patterns["[\\(]"] = "OPAR";
+	patterns["[\\)]"] = "CPAR";
+
+
+    map< size_t, pair<string,string> > matches;
+
+
+	std::ifstream ifs("C:/Users/anura01/Documents/Visual Studio 2010/Projects/TOKENLEXEMES/TOKENLEXEMES/sampleregex.txt",std::ios::in | std::ios::binary);
+	std::string str( (std::istreambuf_iterator<char>(ifs) ),
+                       (std::istreambuf_iterator<char>()    ) );
+
+
+	//cout << "ENTER ANY EXPRESSION :" << endl;
+	//getline(cin,str);
+
+	cout << "REGULAR EXPRESSION" << endl;
+   cout << str << endl<<endl;
+	cout << "==========================" << endl << endl;
+
+    for ( auto pat = patterns.begin(); pat != patterns.end(); ++pat )
+    {
+        regex r(pat->first);
+        auto words_begin = sregex_iterator( str.begin(), str.end(), r );
+        auto words_end   = sregex_iterator();
+
+        for ( auto it = words_begin; it != words_end; ++it )
+            matches[ it->position() ] = make_pair( it->str(), pat->second );
+    }
+
+    for ( auto match = matches.begin(); match != matches.end(); ++match )
+        cout<< match->second.first << " " << match->second.second << endl;
+	
+	cout << endl;
+	system("pause");
+	
+}
